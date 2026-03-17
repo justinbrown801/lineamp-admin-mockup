@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LineAmp Admin Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #0f1117;
+    --bg2:      #161820;
+    --bg3:      #1e2029;
+    --bg4:      #252733;
+    --border:   #2a2d3a;
+    --border2:  #363a4a;
+    --text:     #e8eaf0;
+    --text2:    #9499b0;
+    --text3:    #5a5f78;
+    --accent:   #7c5cfc;
+    --accent2:  #9d82fc;
+    --green:    #22c98a;
+    --green-bg: #0d2b1f;
+    --red:      #f25c5c;
+    --red-bg:   #2b1111;
+    --amber:    #f5a623;
+    --amber-bg: #2b2010;
+    --blue:     #4d9ef7;
+    --blue-bg:  #0d1f35;
+    --radius:   8px;
+    --radius-lg:12px;
+  }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  /* ── LOGIN SCREEN ── */
+  #login-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: var(--bg);
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    flex-direction: column;
+    gap: 0;
+  }
+  .login-card {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-lg);
+    padding: 44px 48px;
+    width: 380px;
+  }
+  .login-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 32px; }
+  .login-logo-icon { width: 34px; height: 34px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+  .login-logo-icon svg { width: 18px; height: 18px; fill: #fff; }
+  .login-logo-name { font-size: 17px; font-weight: 600; color: var(--text); }
+  .login-logo-badge { font-size: 9px; font-family: 'DM Mono', monospace; background: var(--accent); color: #fff; padding: 2px 7px; border-radius: 4px; letter-spacing: 0.08em; text-transform: uppercase; margin-left: 4px; }
+  .login-title { font-size: 20px; font-weight: 600; margin-bottom: 6px; }
+  .login-sub { font-size: 12px; color: var(--text2); margin-bottom: 28px; }
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-size: 11px; font-weight: 500; color: var(--text2); margin-bottom: 6px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .form-group input { width: 100%; background: var(--bg3); border: 1px solid var(--border2); border-radius: var(--radius); padding: 10px 14px; color: var(--text); font-family: 'Sora', sans-serif; font-size: 13px; outline: none; transition: border-color 0.15s; }
+  .form-group input:focus { border-color: var(--accent); }
+  .form-group input::placeholder { color: var(--text3); }
+  .btn-primary { width: 100%; background: var(--accent); color: #fff; border: none; border-radius: var(--radius); padding: 11px; font-family: 'Sora', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; margin-top: 4px; transition: background 0.15s, transform 0.1s; }
+  .btn-primary:hover { background: var(--accent2); }
+  .btn-primary:active { transform: scale(0.98); }
+  .login-warning { display: flex; align-items: center; gap: 8px; background: var(--amber-bg); border: 1px solid #3a2a10; border-radius: var(--radius); padding: 10px 12px; margin-top: 20px; font-size: 11px; color: var(--amber); }
+  .login-warning svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+  /* ── APP SHELL ── */
+  #app { display: none; min-height: 100vh; }
+  .shell { display: flex; min-height: 100vh; }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 220px;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+  }
+  .sidebar-header { padding: 18px 16px 14px; border-bottom: 1px solid var(--border); }
+  .sidebar-logo { display: flex; align-items: center; gap: 9px; }
+  .sidebar-logo-icon { width: 28px; height: 28px; background: var(--accent); border-radius: 7px; display: flex; align-items: center; justify-content: center; }
+  .sidebar-logo-icon svg { width: 15px; height: 15px; fill: #fff; }
+  .sidebar-logo-name { font-size: 14px; font-weight: 600; }
+  .sidebar-logo-badge { font-size: 8px; font-family: 'DM Mono', monospace; background: #2a1f5c; color: var(--accent2); padding: 2px 6px; border-radius: 3px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .sidebar-nav { padding: 10px 0; flex: 1; overflow-y: auto; }
+  .nav-section-label { font-size: 9px; font-weight: 500; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; padding: 10px 16px 4px; font-family: 'DM Mono', monospace; }
+  .nav-item { display: flex; align-items: center; gap: 9px; padding: 8px 16px; font-size: 12.5px; color: var(--text2); cursor: pointer; border-radius: 0; transition: background 0.12s, color 0.12s; position: relative; }
+  .nav-item:hover { background: var(--bg3); color: var(--text); }
+  .nav-item.active { background: #1e1a35; color: var(--accent2); }
+  .nav-item.active::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--accent); border-radius: 0 2px 2px 0; }
+  .nav-item svg { width: 15px; height: 15px; flex-shrink: 0; }
+  .nav-badge { margin-left: auto; background: var(--red); color: #fff; font-size: 9px; font-weight: 600; padding: 1px 6px; border-radius: 10px; font-family: 'DM Mono', monospace; }
+  .nav-badge.amber { background: var(--amber); color: #1a1000; }
+  .sidebar-footer { padding: 12px 16px; border-top: 1px solid var(--border); }
+  .admin-user { display: flex; align-items: center; gap: 9px; }
+  .admin-avatar { width: 28px; height: 28px; border-radius: 50%; background: #2a1f5c; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--accent2); }
+  .admin-info { flex: 1; min-width: 0; }
+  .admin-name { font-size: 11px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .admin-role { font-size: 9px; color: var(--text3); font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: 0.05em; }
+  .logout-btn { background: none; border: none; color: var(--text3); cursor: pointer; padding: 2px; transition: color 0.12s; }
+  .logout-btn:hover { color: var(--red); }
+
+  /* ── MAIN CONTENT ── */
+  .main { margin-left: 220px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+  .topbar { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 0 28px; height: 52px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+  .topbar-title { font-size: 15px; font-weight: 600; }
+  .topbar-sub { font-size: 11px; color: var(--text3); font-family: 'DM Mono', monospace; }
+  .topbar-right { display: flex; align-items: center; gap: 12px; }
+  .env-badge { font-size: 9px; font-family: 'DM Mono', monospace; background: var(--green-bg); color: var(--green); border: 1px solid #1a4030; padding: 3px 10px; border-radius: 4px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .page-content { padding: 24px 28px; flex: 1; }
+
+  /* ── VIEWS ── */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ── STAT CARDS ── */
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+  .stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px 20px; }
+  .stat-label { font-size: 10px; color: var(--text3); font-family: 'DM Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+  .stat-value { font-size: 26px; font-weight: 600; letter-spacing: -0.5px; margin-bottom: 4px; }
+  .stat-delta { font-size: 10px; color: var(--text3); }
+  .stat-delta.up { color: var(--green); }
+  .stat-delta.warn { color: var(--amber); }
+  .stat-delta.down { color: var(--red); }
+
+  /* ── TABLE ── */
+  .table-wrap { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+  .table-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px 12px; border-bottom: 1px solid var(--border); gap: 12px; }
+  .table-title { font-size: 13px; font-weight: 600; }
+  .table-controls { display: flex; gap: 8px; align-items: center; }
+  .search-input { background: var(--bg3); border: 1px solid var(--border2); border-radius: var(--radius); padding: 7px 12px 7px 32px; color: var(--text); font-family: 'Sora', sans-serif; font-size: 12px; outline: none; width: 220px; position: relative; transition: border-color 0.15s; }
+  .search-input:focus { border-color: var(--accent); }
+  .search-input::placeholder { color: var(--text3); }
+  .search-wrap { position: relative; }
+  .search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 13px; height: 13px; color: var(--text3); pointer-events: none; }
+  .filter-select { background: var(--bg3); border: 1px solid var(--border2); border-radius: var(--radius); padding: 7px 10px; color: var(--text2); font-family: 'Sora', sans-serif; font-size: 12px; outline: none; cursor: pointer; }
+  table { width: 100%; border-collapse: collapse; }
+  thead { background: var(--bg3); }
+  th { padding: 9px 16px; text-align: left; font-size: 10px; color: var(--text3); font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; font-family: 'DM Mono', monospace; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  td { padding: 11px 16px; border-bottom: 1px solid var(--border); font-size: 12px; color: var(--text); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tbody tr { cursor: pointer; transition: background 0.1s; }
+  tbody tr:hover { background: var(--bg3); }
+
+  /* ── STATUS PILLS ── */
+  .pill { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 500; padding: 3px 9px; border-radius: 20px; white-space: nowrap; font-family: 'DM Mono', monospace; }
+  .pill::before { content: ''; width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+  .pill.green { background: var(--green-bg); color: var(--green); border: 1px solid #1a4030; }
+  .pill.green::before { background: var(--green); }
+  .pill.red { background: var(--red-bg); color: var(--red); border: 1px solid #3a1515; }
+  .pill.red::before { background: var(--red); }
+  .pill.amber { background: var(--amber-bg); color: var(--amber); border: 1px solid #3a2510; }
+  .pill.amber::before { background: var(--amber); }
+  .pill.blue { background: var(--blue-bg); color: var(--blue); border: 1px solid #112a45; }
+  .pill.blue::before { background: var(--blue); }
+  .pill.gray { background: var(--bg4); color: var(--text3); border: 1px solid var(--border2); }
+  .pill.gray::before { background: var(--text3); }
+
+  /* ── CUSTOMER DETAIL ── */
+  .detail-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 22px; gap: 16px; }
+  .detail-header-left { display: flex; align-items: center; gap: 14px; }
+  .back-btn { background: var(--bg3); border: 1px solid var(--border2); border-radius: var(--radius); padding: 7px 12px; color: var(--text2); cursor: pointer; font-family: 'Sora', sans-serif; font-size: 12px; display: flex; align-items: center; gap: 6px; transition: color 0.12s, border-color 0.12s; }
+  .back-btn:hover { color: var(--text); border-color: var(--border2); }
+  .detail-avatar { width: 46px; height: 46px; border-radius: 12px; background: #1e1a35; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600; color: var(--accent2); }
+  .detail-name { font-size: 20px; font-weight: 600; margin-bottom: 3px; }
+  .detail-meta { font-size: 11px; color: var(--text3); font-family: 'DM Mono', monospace; }
+  .detail-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn-sm { background: var(--bg3); border: 1px solid var(--border2); border-radius: var(--radius); padding: 8px 14px; color: var(--text2); cursor: pointer; font-family: 'Sora', sans-serif; font-size: 12px; font-weight: 500; display: flex; align-items: center; gap: 6px; transition: all 0.12s; white-space: nowrap; }
+  .btn-sm:hover { color: var(--text); border-color: var(--accent); }
+  .btn-sm.danger { border-color: var(--red-bg); }
+  .btn-sm.danger:hover { border-color: var(--red); color: var(--red); background: var(--red-bg); }
+  .btn-sm.success { border-color: var(--green-bg); }
+  .btn-sm.success:hover { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+  .btn-sm.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn-sm.primary:hover { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+
+  /* ── TABS ── */
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 22px; }
+  .tab { padding: 10px 18px; font-size: 12px; color: var(--text3); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color 0.12s; white-space: nowrap; font-weight: 500; }
+  .tab:hover { color: var(--text2); }
+  .tab.active { color: var(--accent2); border-bottom-color: var(--accent); }
+
+  /* ── DETAIL CARDS ── */
+  .card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 22px; margin-bottom: 16px; }
+  .card-title { font-size: 12px; font-weight: 600; color: var(--text2); letter-spacing: 0.04em; text-transform: uppercase; font-family: 'DM Mono', monospace; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .card-title .pill { text-transform: none; letter-spacing: 0; }
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .info-item label { font-size: 10px; color: var(--text3); font-family: 'DM Mono', monospace; letter-spacing: 0.06em; text-transform: uppercase; display: block; margin-bottom: 4px; }
+  .info-item span { font-size: 13px; color: var(--text); }
+  .info-item span.mono { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text2); }
+
+  /* ── PAYMENT ROWS ── */
+  .payment-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .payment-row:last-child { border-bottom: none; }
+  .payment-info { flex: 1; }
+  .payment-id { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--text3); }
+  .payment-desc { font-size: 12px; color: var(--text); }
+  .payment-amount { font-size: 14px; font-weight: 600; font-family: 'DM Mono', monospace; color: var(--text); text-align: right; }
+  .payment-date { font-size: 10px; color: var(--text3); text-align: right; margin-top: 2px; }
+
+  /* ── TIMELINE / AUDIT ── */
+  .timeline { position: relative; }
+  .timeline::before { content: ''; position: absolute; left: 15px; top: 0; bottom: 0; width: 1px; background: var(--border); }
+  .timeline-item { display: flex; gap: 16px; padding-bottom: 18px; position: relative; }
+  .timeline-dot { width: 30px; height: 30px; border-radius: 50%; background: var(--bg3); border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; z-index: 1; }
+  .timeline-dot svg { width: 12px; height: 12px; }
+  .timeline-body { flex: 1; padding-top: 5px; }
+  .timeline-action { font-size: 12px; color: var(--text); margin-bottom: 2px; }
+  .timeline-action strong { color: var(--accent2); }
+  .timeline-time { font-size: 10px; color: var(--text3); font-family: 'DM Mono', monospace; }
+
+  /* ── HEALTH DASHBOARD ── */
+  .health-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .health-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px 20px; }
+  .health-card-title { font-size: 11px; font-weight: 600; color: var(--text2); font-family: 'DM Mono', monospace; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 14px; }
+  .health-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .health-row:last-child { border-bottom: none; }
+  .health-label { font-size: 12px; color: var(--text2); }
+  .health-val { font-size: 12px; font-family: 'DM Mono', monospace; }
+  .health-val.green { color: var(--green); }
+  .health-val.red { color: var(--red); }
+  .health-val.amber { color: var(--amber); }
+
+  /* ── FUNNEL ── */
+  .funnel { display: flex; flex-direction: column; gap: 8px; }
+  .funnel-row { display: flex; align-items: center; gap: 12px; }
+  .funnel-label { font-size: 11px; color: var(--text2); width: 160px; flex-shrink: 0; }
+  .funnel-bar-wrap { flex: 1; background: var(--bg3); border-radius: 4px; height: 22px; overflow: hidden; }
+  .funnel-bar { height: 100%; border-radius: 4px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; font-size: 10px; font-family: 'DM Mono', monospace; color: #fff; font-weight: 500; transition: width 0.6s ease; }
+  .funnel-count { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--text3); width: 36px; text-align: right; flex-shrink: 0; }
+
+  /* ── MODAL OVERLAY (action feedback) ── */
+  .toast { position: fixed; bottom: 24px; right: 24px; background: var(--bg3); border: 1px solid var(--green); border-radius: var(--radius); padding: 12px 18px; font-size: 12px; color: var(--green); z-index: 1000; display: none; align-items: center; gap: 8px; box-shadow: 0 4px 24px rgba(0,0,0,0.4); }
+  .toast.show { display: flex; animation: slideIn 0.2s ease; }
+  .toast.error { border-color: var(--red); color: var(--red); }
+  .toast.warn { border-color: var(--amber); color: var(--amber); }
+  @keyframes slideIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  /* ── USAGE BARS ── */
+  .usage-stat { display: flex; align-items: center; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .usage-stat:last-child { border-bottom: none; }
+  .usage-label { font-size: 12px; color: var(--text2); width: 140px; flex-shrink: 0; }
+  .usage-bar-wrap { flex: 1; background: var(--bg3); border-radius: 4px; height: 8px; overflow: hidden; }
+  .usage-bar { height: 100%; border-radius: 4px; background: var(--accent); }
+  .usage-num { font-size: 12px; font-family: 'DM Mono', monospace; color: var(--text); width: 60px; text-align: right; flex-shrink: 0; }
+
+  /* ── CONFIRM MODAL ── */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 500; display: none; align-items: center; justify-content: center; }
+  .modal-overlay.show { display: flex; }
+  .modal-box { background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius-lg); padding: 28px 32px; width: 380px; }
+  .modal-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .modal-body { font-size: 12px; color: var(--text2); margin-bottom: 24px; line-height: 1.7; }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+  .btn-cancel { background: var(--bg3); border: 1px solid var(--border2); border-radius: var(--radius); padding: 8px 18px; color: var(--text2); cursor: pointer; font-family: 'Sora', sans-serif; font-size: 12px; }
+  .btn-confirm { background: var(--red); border: none; border-radius: var(--radius); padding: 8px 18px; color: #fff; cursor: pointer; font-family: 'Sora', sans-serif; font-size: 12px; font-weight: 500; }
+  .btn-confirm.safe { background: var(--accent); }
+
+  /* REPORTS */
+  .report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .chart-placeholder { height: 120px; background: var(--bg3); border-radius: var(--radius); margin-top: 14px; display: flex; align-items: flex-end; gap: 6px; padding: 12px 14px 0; overflow: hidden; }
+  .bar { flex: 1; border-radius: 3px 3px 0 0; transition: height 0.4s; }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════ LOGIN ═══════════════════════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+      </div>
+      <span class="login-logo-name">LineAmp</span>
+      <span class="login-logo-badge">Admin</span>
+    </div>
+    <div class="login-title">Staff portal</div>
+    <div class="login-sub">Internal use only — not the customer login</div>
+    <div class="form-group">
+      <label>Admin email</label>
+      <input type="email" value="justin@lineamp.com" placeholder="admin@lineamp.com">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" value="••••••••••" placeholder="••••••••">
+    </div>
+    <button class="btn-primary" onclick="login()">Sign in to Admin Portal</button>
+    <div class="login-warning">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Restricted access. All actions are logged.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ APP ═══════════════════════════ -->
+<div id="app">
+  <div class="shell">
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <div class="sidebar-logo-icon">
+            <svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+          </div>
+          <span class="sidebar-logo-name">LineAmp</span>
+          <span class="sidebar-logo-badge">Admin</span>
+        </div>
+      </div>
+      <div class="sidebar-nav">
+        <div class="nav-section-label">Overview</div>
+        <div class="nav-item active" onclick="showView('dashboard', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </div>
+        <div class="nav-section-label">Accounts</div>
+        <div class="nav-item" onclick="showView('customers', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          All Accounts
+          <span class="nav-badge amber">4</span>
+        </div>
+        <div class="nav-item" onclick="showView('customers', this); filterStatus('incomplete')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Incomplete Setup
+          <span class="nav-badge">6</span>
+        </div>
+        <div class="nav-section-label">Payments</div>
+        <div class="nav-item" onclick="showView('disputes', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+          Disputes
+          <span class="nav-badge">3</span>
+        </div>
+        <div class="nav-item" onclick="showView('payouts', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+          Payouts &amp; Holds
+        </div>
+        <div class="nav-section-label">Analytics</div>
+        <div class="nav-item" onclick="showView('reports', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          Reports
+        </div>
+        <div class="nav-section-label">System</div>
+        <div class="nav-item" onclick="showView('settings', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          Admin Settings
+        </div>
+      </div>
+      <div class="sidebar-footer">
+        <div class="admin-user">
+          <div class="admin-avatar">JB</div>
+          <div class="admin-info">
+            <div class="admin-name">Justin Brown</div>
+            <div class="admin-role">Super Admin</div>
+          </div>
+          <button class="logout-btn" onclick="logout()" title="Sign out">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- MAIN -->
+    <main class="main">
+
+      <!-- ── DASHBOARD ── -->
+      <div id="view-dashboard" class="view active">
+        <div class="topbar">
+          <div>
+            <div class="topbar-title">Platform Dashboard</div>
+            <div class="topbar-sub">lineamp.com · Updated just now</div>
+          </div>
+          <div class="topbar-right">
+            <span class="env-badge">● Live</span>
+          </div>
+        </div>
+        <div class="page-content">
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="stat-label">Active Accounts</div>
+              <div class="stat-value">47</div>
+              <div class="stat-delta up">↑ 5 this month</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Total Vol (30d)</div>
+              <div class="stat-value">$184k</div>
+              <div class="stat-delta up">↑ 22% vs prior</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Incomplete Setup</div>
+              <div class="stat-value" style="color:var(--amber)">6</div>
+              <div class="stat-delta warn">Zoom or JustiFi missing</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Open Disputes</div>
+              <div class="stat-value" style="color:var(--red)">3</div>
+              <div class="stat-delta down">2 require response</div>
+            </div>
+          </div>
+
+          <div class="health-grid">
+            <div class="health-card">
+              <div class="health-card-title">System Health</div>
+              <div class="health-row"><span class="health-label">JustiFi API</span><span class="health-val green">● Operational</span></div>
+              <div class="health-row"><span class="health-label">JustiFi Webhooks</span><span class="health-val green">● Delivering</span></div>
+              <div class="health-row"><span class="health-label">Zoom OAuth</span><span class="health-val green">● Operational</span></div>
+              <div class="health-row"><span class="health-label">SMS Delivery</span><span class="health-val amber">● Degraded</span></div>
+              <div class="health-row"><span class="health-label">Last webhook event</span><span class="health-val" style="color:var(--text2)">2 min ago</span></div>
+            </div>
+
+            <div class="health-card">
+              <div class="health-card-title">Setup Funnel</div>
+              <div class="funnel">
+                <div class="funnel-row">
+                  <div class="funnel-label">Account created</div>
+                  <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:100%;background:var(--accent)">53</div></div>
+                  <div class="funnel-count">53</div>
+                </div>
+                <div class="funnel-row">
+                  <div class="funnel-label">Zoom connected</div>
+                  <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:89%;background:var(--blue)">47</div></div>
+                  <div class="funnel-count">47</div>
+                </div>
+                <div class="funnel-row">
+                  <div class="funnel-label">JustiFi approved</div>
+                  <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:79%;background:var(--green)">42</div></div>
+                  <div class="funnel-count">42</div>
+                </div>
+                <div class="funnel-row">
+                  <div class="funnel-label">First payment sent</div>
+                  <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:62%;background:var(--amber)">33</div></div>
+                  <div class="funnel-count">33</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="health-card">
+              <div class="health-card-title">Accounts Needing Attention</div>
+              <div class="health-row"><span class="health-label">No Zoom connection</span><span class="health-val amber">4 accounts</span></div>
+              <div class="health-row"><span class="health-label">JustiFi not approved</span><span class="health-val amber">5 accounts</span></div>
+              <div class="health-row"><span class="health-label">Payout holds active</span><span class="health-val red">2 accounts</span></div>
+              <div class="health-row"><span class="health-label">Inactive 30+ days</span><span class="health-val" style="color:var(--text3)">3 accounts</span></div>
+              <div class="health-row"><span class="health-label">Suspended</span><span class="health-val red">1 account</span></div>
+            </div>
+
+            <div class="health-card">
+              <div class="health-card-title">Recent Activity</div>
+              <div class="health-row"><span class="health-label" style="font-size:11px">Acme Services — signed up</span><span class="health-val" style="color:var(--text3)">2h ago</span></div>
+              <div class="health-row"><span class="health-label" style="font-size:11px">Peak Roofing — JustiFi approved</span><span class="health-val" style="color:var(--text3)">4h ago</span></div>
+              <div class="health-row"><span class="health-label" style="font-size:11px">MH Business — dispute opened</span><span class="health-val" style="color:var(--red)">6h ago</span></div>
+              <div class="health-row"><span class="health-label" style="font-size:11px">Bright Clean Co — Zoom reconnected</span><span class="health-val" style="color:var(--text3)">1d ago</span></div>
+              <div class="health-row"><span class="health-label" style="font-size:11px">Lakewood HVAC — account suspended</span><span class="health-val" style="color:var(--red)">2d ago</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── CUSTOMERS LIST ── -->
+      <div id="view-customers" class="view">
+        <div class="topbar">
+          <div>
+            <div class="topbar-title">All Accounts</div>
+            <div class="topbar-sub">53 total · 47 active</div>
+          </div>
+          <div class="topbar-right">
+            <span class="env-badge">● Live</span>
+          </div>
+        </div>
+        <div class="page-content">
+          <div class="table-wrap">
+            <div class="table-header">
+              <div class="table-title">Customer accounts</div>
+              <div class="table-controls">
+                <div class="search-wrap">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  <input class="search-input" type="text" placeholder="Search by name, email, phone...">
+                </div>
+                <select class="filter-select">
+                  <option>All status</option>
+                  <option>Active</option>
+                  <option>Suspended</option>
+                  <option>Pending setup</option>
+                </select>
+                <select class="filter-select">
+                  <option>All JustiFi</option>
+                  <option>Approved</option>
+                  <option>Pending</option>
+                  <option>Not started</option>
+                </select>
+              </div>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Business</th>
+                  <th>Status</th>
+                  <th>Zoom</th>
+                  <th>JustiFi</th>
+                  <th>30d Volume</th>
+                  <th>Last Active</th>
+                  <th>Signed Up</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr onclick="showCustomer('mh')">
+                  <td><div style="font-weight:500">MH Business</div><div style="font-size:10px;color:var(--text3);font-family:'DM Mono',monospace">matt.hyde@hey.com</div></td>
+                  <td><span class="pill green">Active</span></td>
+                  <td><span class="pill green">Connected</span></td>
+                  <td><span class="pill green">Approved</span></td>
+                  <td style="font-family:'DM Mono',monospace">$12,450</td>
+                  <td style="color:var(--text2)">Today</td>
+                  <td style="color:var(--text3)">Feb 1, 2025</td>
+                </tr>
+                <tr onclick="showCustomer('peak')">
+                  <td><div style="font-weight:500">Peak Roofing LLC</div><div style="font-size:10px;color:var(--text3);font-family:'DM Mono',monospace">billing@peakroof.com</div></td>
+                  <td><span class="pill green">Active</span></td>
+                  <td><span class="pill green">Connected</span></td>
+                  <td><span class="pill green">Approved</span></td>
+                  <td style="font-family:'DM Mono',monospace">$8,200</td>
+                  <td style="color:var(--text2)">Today</td>
+                  <td style="color:var(--text3)">Feb 14, 2025</td>
+                </tr>
+                <tr onclick="showCustomer('acme')">
+                  <td><div style="font-weight:500">Acme Services</div><div style="font-size:10px;color:var(--text3);font-family:'DM Mono',monospace">ops@acmeservices.io</div></td>
+                  <td><span class="pill amber">Pending setup</span></td>
+                  <td><span class="pill red">Disconnected</span></td>
+                  <td><span class="pill amber">Pending</span></td>
+                  <td style="font-family:'DM Mono',monospace;color:var(--text3)">—</td>
+                  <td style="color:var(--text3)">2h ago</td>
+                  <td style="color:var(--text3)">Mar 17, 2026</td>
+                </tr>
+                <tr onclick="showCustomer('bright')">
+                  <td><div style="font-weight:500">Bright Clean Co</div><div style="font-size:10px;color:var(--text3);font-family:'DM Mono',monospace">sarah@brightclean.com</div></td>
+                  <td><span class="pill green">Active</span></td>
+                  <td><span class="pill green">Connected</span></td>
+                  <td><span class="pill amber">Pending</span></td>
+                  <td style="font-family:'DM Mono',monospace">$3,100</td>
+                  <td style="color:var(--text2)">Yesterday</td>
+                  <td style="color:var(--text3)">Mar 1, 2026</td>
+                </tr>
+                <tr onclick="showCustomer('lakewood')">
+                  <td><div style="font-weight:500">Lakewood HVAC</div><div style="font-size:10px;color:var(--text3);font-family:'DM Mono',monospace">admin@lakewoodhvac.com</div></td>
+                  <td><span class="pill red">Suspended</span></td>
+                  <td><span class="pill green">Connected</span></td>
+                  <td><span class="pill green">Approved</span></td>
+                  <td style="font-family:'DM Mono',monospace;color:var(--text3)">$0</td>
+                  <td style="color:var(--text3)">14d ago</td>
+                  <td style="color:var(--text3)">Jan 5, 2025</td>
+                </tr>
+                <tr onclick="showCustomer('nj')">
+                  <td><div style="font-weight:500">NJ LineAmp Test</div><div style="font-size:10px;color:var(--text3);font-family:'DM Mono',monospace">test@njtest.com</div></td>
+                  <td><span class="pill gray">Inactive</span></td>
+                  <td><span class="pill red">Disconnected</span></td>
+                  <td><span class="pill gray">Not started</span></td>
+                  <td style="font-family:'DM Mono',monospace;color:var(--text3)">—</td>
+                  <td style="color:var(--text3)">45d ago</td>
+                  <td style="color:var(--text3)">Feb 1, 2026</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── CUSTOMER DETAIL ── -->
+      <div id="view-customer-detail" class="view">
+        <div class="topbar">
+          <div>
+            <div class="topbar-title" id="detail-topbar-title">Account Detail</div>
+            <div class="topbar-sub">acc_mh4829x · JustiFi sub-account</div>
+          </div>
+          <div class="topbar-right"><span class="env-badge">● Live</span></div>
+        </div>
+        <div class="page-content">
+          <div class="detail-header">
+            <div class="detail-header-left">
+              <button class="back-btn" onclick="showView('customers', null)">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+                All accounts
+              </button>
+              <div class="detail-avatar" id="detail-avatar">MH</div>
+              <div>
+                <div class="detail-name" id="detail-name">MH Business</div>
+                <div class="detail-meta" id="detail-meta">matt.hyde@hey.com · +18014009287 · Active since Feb 2025</div>
+              </div>
+            </div>
+            <div class="detail-actions">
+              <button class="btn-sm" onclick="toast('Password reset email sent to matt.hyde@hey.com','')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                Reset Password
+              </button>
+              <button class="btn-sm" onclick="toast('Opened read-only impersonation session','')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                View as Customer
+              </button>
+              <button class="btn-sm danger" onclick="showConfirm('suspend')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                Suspend Account
+              </button>
+            </div>
+          </div>
+
+          <div class="tabs">
+            <div class="tab active" onclick="showTab('overview', this)">Overview</div>
+            <div class="tab" onclick="showTab('zoom', this)">Zoom Connection</div>
+            <div class="tab" onclick="showTab('justifi', this)">JustiFi / Payments</div>
+            <div class="tab" onclick="showTab('usage', this)">Usage &amp; Activity</div>
+            <div class="tab" onclick="showTab('team', this)">Team Members</div>
+            <div class="tab" onclick="showTab('audit', this)">Audit Log</div>
+          </div>
+
+          <!-- TAB: OVERVIEW -->
+          <div id="tab-overview" class="tab-panel">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+              <div class="card">
+                <div class="card-title">Business info</div>
+                <div class="info-grid">
+                  <div class="info-item"><label>Business name</label><span>MH Business</span></div>
+                  <div class="info-item"><label>Primary email</label><span>matt.hyde@hey.com</span></div>
+                  <div class="info-item"><label>Phone</label><span>+18014009287</span></div>
+                  <div class="info-item"><label>Website</label><span style="color:var(--blue)">mhbusiness.com</span></div>
+                  <div class="info-item"><label>Account status</label><span class="pill green" style="display:inline-flex">Active</span></div>
+                  <div class="info-item"><label>Signed up</label><span>Feb 1, 2025</span></div>
+                  <div class="info-item"><label>Last login</label><span>Today, 8:14 AM</span></div>
+                  <div class="info-item"><label>Plan</label><span>Pro</span></div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-title">Integration status</div>
+                <div class="health-row"><span class="health-label">Zoom account</span><span class="health-val green">● Connected</span></div>
+                <div class="health-row"><span class="health-label">JustiFi sub-account</span><span class="health-val green">● Approved</span></div>
+                <div class="health-row"><span class="health-label">Payout account</span><span class="health-val green">● Verified</span></div>
+                <div class="health-row"><span class="health-label">Open disputes</span><span class="health-val red">1 open</span></div>
+                <div class="health-row"><span class="health-label">Payout holds</span><span class="health-val green">None</span></div>
+                <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+                  <a style="font-size:11px;color:var(--blue);cursor:pointer" onclick="toast('Opening JustiFi dashboard…','')">View in JustiFi ↗</a>
+                  <span style="color:var(--border2)">·</span>
+                  <a style="font-size:11px;color:var(--blue);cursor:pointer" onclick="toast('Opening Zoom admin panel…','')">View Zoom account ↗</a>
+                </div>
+              </div>
+              <div class="card" style="grid-column:1/-1">
+                <div class="card-title">Internal notes</div>
+                <textarea style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:10px 12px;color:var(--text);font-family:'Sora',sans-serif;font-size:12px;line-height:1.6;resize:vertical;min-height:80px;outline:none" placeholder="Add internal support notes here — not visible to the customer…">Matt reached out 3/5 re: slow payment confirmation. Confirmed JustiFi webhook latency issue. Resolved 3/6.</textarea>
+                <button class="btn-sm" style="margin-top:10px" onclick="toast('Notes saved','')">Save notes</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB: ZOOM -->
+          <div id="tab-zoom" class="tab-panel" style="display:none">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+              <div class="card">
+                <div class="card-title">Connection status <span class="pill green">Connected</span></div>
+                <div class="info-grid">
+                  <div class="info-item"><label>Zoom email</label><span>matt.hyde@hey.com</span></div>
+                  <div class="info-item"><label>Zoom account ID</label><span class="mono">zm_acct_8fha29x</span></div>
+                  <div class="info-item"><label>Connected on</label><span>Feb 1, 2025</span></div>
+                  <div class="info-item"><label>Last sync</label><span>3 min ago</span></div>
+                </div>
+                <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">
+                  <button class="btn-sm danger" onclick="showConfirm('zoom-disconnect')">Disconnect Zoom</button>
+                  <button class="btn-sm" onclick="toast('New Zoom connection link sent to matt.hyde@hey.com','')">Re-send OAuth link</button>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-title">Phone numbers</div>
+                <div class="payment-row"><div class="payment-info"><div class="payment-desc">+1 (801) 555-0100</div><div class="payment-id">Main Business Line</div></div><span class="pill green">Active</span></div>
+                <div class="payment-row"><div class="payment-info"><div class="payment-desc">+1 (801) 555-0200</div><div class="payment-id">Sales Line</div></div><span class="pill green">Active</span></div>
+              </div>
+              <div class="card" style="grid-column:1/-1">
+                <div class="card-title">Connection error log</div>
+                <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;padding:4px 0">No recent errors — connection healthy</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB: JUSTIFI -->
+          <div id="tab-justifi" class="tab-panel" style="display:none">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+              <div class="card">
+                <div class="card-title">Sub-account status <span class="pill green">Approved</span></div>
+                <div class="info-grid">
+                  <div class="info-item"><label>Sub-account ID</label><span class="mono">acc_mh4829x</span></div>
+                  <div class="info-item"><label>Business ID</label><span class="mono">biz_k29ahx71</span></div>
+                  <div class="info-item"><label>Underwriting</label><span style="color:var(--green)">Approved</span></div>
+                  <div class="info-item"><label>Currency</label><span>USD</span></div>
+                  <div class="info-item"><label>Payout account</label><span style="color:var(--green)">●●●●4422 — Verified</span></div>
+                  <div class="info-item"><label>Payout holds</label><span style="color:var(--text3)">None</span></div>
+                </div>
+                <div style="margin-top:14px;display:flex;gap:8px">
+                  <button class="btn-sm" onclick="toast('Opening JustiFi dashboard for acc_mh4829x…','')">Open in JustiFi ↗</button>
+                  <button class="btn-sm" onclick="toast('Onboarding link sent to matt.hyde@hey.com','')">Re-trigger onboarding</button>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-title">Payment summary</div>
+                <div class="health-row"><span class="health-label">Last 7 days</span><span class="health-val" style="color:var(--text)">$3,200</span></div>
+                <div class="health-row"><span class="health-label">Last 30 days</span><span class="health-val" style="color:var(--text)">$12,450</span></div>
+                <div class="health-row"><span class="health-label">Lifetime volume</span><span class="health-val" style="color:var(--text)">$84,220</span></div>
+                <div class="health-row"><span class="health-label">Payment link conv.</span><span class="health-val" style="color:var(--green)">73%</span></div>
+                <div class="health-row"><span class="health-label">Open disputes</span><span class="health-val red">1</span></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">Recent payments</div>
+              <div class="payment-row">
+                <div class="payment-info"><div class="payment-desc">Website redesign deposit</div><div class="payment-id">pay_7fa92b · Mar 17, 2026</div></div>
+                <span class="pill green" style="margin-right:12px">Succeeded</span>
+                <div><div class="payment-amount">$500.00</div></div>
+              </div>
+              <div class="payment-row">
+                <div class="payment-info"><div class="payment-desc">Monthly retainer — March</div><div class="payment-id">pay_6dc81a · Mar 10, 2026</div></div>
+                <span class="pill green" style="margin-right:12px">Succeeded</span>
+                <div><div class="payment-amount">$1,200.00</div></div>
+              </div>
+              <div class="payment-row">
+                <div class="payment-info"><div class="payment-desc">Logo design package</div><div class="payment-id">pay_5bc72f · Mar 5, 2026</div></div>
+                <span class="pill amber" style="margin-right:12px">Disputed</span>
+                <div><div class="payment-amount">$350.00</div></div>
+              </div>
+              <div class="payment-row">
+                <div class="payment-info"><div class="payment-desc">Rush print order</div><div class="payment-id">pay_4ab61e · Feb 28, 2026</div></div>
+                <span class="pill green" style="margin-right:12px">Succeeded</span>
+                <div><div class="payment-amount">$175.00</div></div>
+              </div>
+              <div style="margin-top:14px;display:flex;gap:8px">
+                <button class="btn-sm" onclick="toast('Downloading payment CSV for acc_mh4829x…','')">Export CSV</button>
+                <button class="btn-sm danger" onclick="showConfirm('refund')">Issue Refund</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB: USAGE -->
+          <div id="tab-usage" class="tab-panel" style="display:none">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+              <div class="card">
+                <div class="card-title">Usage — last 30 days</div>
+                <div class="usage-stat"><div class="usage-label">SMS messages sent</div><div class="usage-bar-wrap"><div class="usage-bar" style="width:78%"></div></div><div class="usage-num">312</div></div>
+                <div class="usage-stat"><div class="usage-label">Payment links sent</div><div class="usage-bar-wrap"><div class="usage-bar" style="width:55%;background:var(--green)"></div></div><div class="usage-num">89</div></div>
+                <div class="usage-stat"><div class="usage-label">Payments received</div><div class="usage-bar-wrap"><div class="usage-bar" style="width:40%;background:var(--amber)"></div></div><div class="usage-num">65</div></div>
+                <div class="usage-stat"><div class="usage-label">Invoices created</div><div class="usage-bar-wrap"><div class="usage-bar" style="width:62%;background:var(--blue)"></div></div><div class="usage-num">102</div></div>
+                <div class="usage-stat"><div class="usage-label">Active team members</div><div class="usage-bar-wrap"><div class="usage-bar" style="width:20%;background:var(--accent)"></div></div><div class="usage-num">3</div></div>
+              </div>
+              <div class="card">
+                <div class="card-title">Message volume trend</div>
+                <div class="chart-placeholder">
+                  <div class="bar" style="height:40%;background:var(--accent);opacity:0.6"></div>
+                  <div class="bar" style="height:55%;background:var(--accent);opacity:0.65"></div>
+                  <div class="bar" style="height:48%;background:var(--accent);opacity:0.7"></div>
+                  <div class="bar" style="height:70%;background:var(--accent);opacity:0.75"></div>
+                  <div class="bar" style="height:62%;background:var(--accent);opacity:0.8"></div>
+                  <div class="bar" style="height:80%;background:var(--accent);opacity:0.85"></div>
+                  <div class="bar" style="height:90%;background:var(--accent)"></div>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:6px;padding:0 14px">
+                  <span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span><span>Feb</span><span>Mar</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB: TEAM -->
+          <div id="tab-team" class="tab-panel" style="display:none">
+            <div class="table-wrap">
+              <div class="table-header">
+                <div class="table-title">Team members (3)</div>
+                <button class="btn-sm primary" onclick="toast('Invite link copied to clipboard','')">+ Invite member</button>
+              </div>
+              <table>
+                <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Last login</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td><div style="font-weight:500">Matt Hyde</div></td>
+                    <td style="font-family:'DM Mono',monospace;font-size:11px">matt.hyde@hey.com</td>
+                    <td><span class="pill blue">Owner</span></td>
+                    <td style="color:var(--text2)">Today</td>
+                    <td><span class="pill green">Active</span></td>
+                    <td><button class="btn-sm" style="padding:4px 10px;font-size:11px" onclick="toast('Password reset sent to matt.hyde@hey.com','')">Reset PW</button></td>
+                  </tr>
+                  <tr>
+                    <td><div style="font-weight:500">Sarah K.</div></td>
+                    <td style="font-family:'DM Mono',monospace;font-size:11px">sarah@mhbusiness.com</td>
+                    <td><span class="pill gray">Member</span></td>
+                    <td style="color:var(--text2)">2d ago</td>
+                    <td><span class="pill green">Active</span></td>
+                    <td style="display:flex;gap:6px"><button class="btn-sm" style="padding:4px 10px;font-size:11px" onclick="toast('Password reset sent','')">Reset PW</button><button class="btn-sm danger" style="padding:4px 10px;font-size:11px" onclick="toast('User deactivated','error')">Deactivate</button></td>
+                  </tr>
+                  <tr>
+                    <td><div style="font-weight:500">Tom R.</div></td>
+                    <td style="font-family:'DM Mono',monospace;font-size:11px">tom@mhbusiness.com</td>
+                    <td><span class="pill gray">Member</span></td>
+                    <td style="color:var(--text3)">Pending invite</td>
+                    <td><span class="pill amber">Invited</span></td>
+                    <td><button class="btn-sm" style="padding:4px 10px;font-size:11px" onclick="toast('Invite re-sent to tom@mhbusiness.com','')">Resend invite</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TAB: AUDIT -->
+          <div id="tab-audit" class="tab-panel" style="display:none">
+            <div class="card">
+              <div class="card-title">Audit log — MH Business</div>
+              <div class="timeline">
+                <div class="timeline-item">
+                  <div class="timeline-dot" style="border-color:var(--accent)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+                  <div class="timeline-body"><div class="timeline-action"><strong>Justin Brown</strong> (admin) viewed account in impersonation mode</div><div class="timeline-time">Today · 9:02 AM</div></div>
+                </div>
+                <div class="timeline-item">
+                  <div class="timeline-dot"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+                  <div class="timeline-body"><div class="timeline-action">matt.hyde@hey.com changed password</div><div class="timeline-time">Mar 15 · 2:14 PM</div></div>
+                </div>
+                <div class="timeline-item">
+                  <div class="timeline-dot" style="border-color:var(--red)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg></div>
+                  <div class="timeline-body"><div class="timeline-action">Dispute opened on payment <strong>pay_5bc72f</strong> ($350.00)</div><div class="timeline-time">Mar 10 · 11:30 AM</div></div>
+                </div>
+                <div class="timeline-item">
+                  <div class="timeline-dot" style="border-color:var(--green)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
+                  <div class="timeline-body"><div class="timeline-action">JustiFi sub-account approved by underwriting</div><div class="timeline-time">Feb 3 · 9:15 AM</div></div>
+                </div>
+                <div class="timeline-item">
+                  <div class="timeline-dot"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2"><path d="M15 10l-4 4 4 4m-4-4h12"/></svg></div>
+                  <div class="timeline-body"><div class="timeline-action">Zoom account connected (matt.hyde@hey.com)</div><div class="timeline-time">Feb 1 · 3:44 PM</div></div>
+                </div>
+                <div class="timeline-item">
+                  <div class="timeline-dot"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg></div>
+                  <div class="timeline-body"><div class="timeline-action">Account created · matt.hyde@hey.com</div><div class="timeline-time">Feb 1 · 2:10 PM</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── DISPUTES ── -->
+      <div id="view-disputes" class="view">
+        <div class="topbar"><div><div class="topbar-title">Disputes</div><div class="topbar-sub">3 open · 2 require response</div></div><div class="topbar-right"><span class="env-badge">● Live</span></div></div>
+        <div class="page-content">
+          <div class="table-wrap">
+            <div class="table-header"><div class="table-title">Open disputes</div></div>
+            <table>
+              <thead><tr><th>Account</th><th>Payment ID</th><th>Amount</th><th>Reason</th><th>Status</th><th>Response due</th><th>Action</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>MH Business</td>
+                  <td style="font-family:'DM Mono',monospace;font-size:11px">pay_5bc72f</td>
+                  <td style="font-family:'DM Mono',monospace">$350.00</td>
+                  <td>Product not received</td>
+                  <td><span class="pill red">Needs response</span></td>
+                  <td style="color:var(--red)">Mar 24, 2026</td>
+                  <td><button class="btn-sm primary" style="padding:5px 10px;font-size:11px" onclick="toast('Opening dispute response form…','')">Respond</button></td>
+                </tr>
+                <tr>
+                  <td>Peak Roofing LLC</td>
+                  <td style="font-family:'DM Mono',monospace;font-size:11px">pay_3aa51c</td>
+                  <td style="font-family:'DM Mono',monospace">$1,800.00</td>
+                  <td>Services not rendered</td>
+                  <td><span class="pill red">Needs response</span></td>
+                  <td style="color:var(--red)">Mar 22, 2026</td>
+                  <td><button class="btn-sm primary" style="padding:5px 10px;font-size:11px" onclick="toast('Opening dispute response form…','')">Respond</button></td>
+                </tr>
+                <tr>
+                  <td>Bright Clean Co</td>
+                  <td style="font-family:'DM Mono',monospace;font-size:11px">pay_2z940b</td>
+                  <td style="font-family:'DM Mono',monospace">$220.00</td>
+                  <td>Duplicate charge</td>
+                  <td><span class="pill amber">Under review</span></td>
+                  <td style="color:var(--text3)">Apr 1, 2026</td>
+                  <td><button class="btn-sm" style="padding:5px 10px;font-size:11px" onclick="toast('Viewing dispute details…','')">View</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PAYOUTS ── -->
+      <div id="view-payouts" class="view">
+        <div class="topbar"><div><div class="topbar-title">Payouts &amp; Holds</div><div class="topbar-sub">2 accounts with active holds</div></div><div class="topbar-right"><span class="env-badge">● Live</span></div></div>
+        <div class="page-content">
+          <div class="stat-grid" style="grid-template-columns:repeat(3,1fr)">
+            <div class="stat-card"><div class="stat-label">Total Payouts (30d)</div><div class="stat-value">$141k</div><div class="stat-delta up">Across 42 accounts</div></div>
+            <div class="stat-card"><div class="stat-label">Active Holds</div><div class="stat-value" style="color:var(--amber)">2</div><div class="stat-delta warn">$4,200 held</div></div>
+            <div class="stat-card"><div class="stat-label">Next Payout Batch</div><div class="stat-value" style="font-size:18px">Tomorrow</div><div class="stat-delta">Daily schedule</div></div>
+          </div>
+          <div class="table-wrap">
+            <div class="table-header"><div class="table-title">Payout holds</div></div>
+            <table>
+              <thead><tr><th>Account</th><th>Amount held</th><th>Reason</th><th>Hold since</th><th>Action</th></tr></thead>
+              <tbody>
+                <tr><td>Lakewood HVAC</td><td style="font-family:'DM Mono',monospace">$2,800.00</td><td>Account suspended — compliance review</td><td style="color:var(--text3)">Mar 3, 2026</td><td><button class="btn-sm" onclick="toast('Opening hold details…','')">View</button></td></tr>
+                <tr><td>NJ LineAmp Test</td><td style="font-family:'DM Mono',monospace">$1,400.00</td><td>Underwriting not complete</td><td style="color:var(--text3)">Feb 20, 2026</td><td><button class="btn-sm" onclick="toast('Opening hold details…','')">View</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── REPORTS ── -->
+      <div id="view-reports" class="view">
+        <div class="topbar"><div><div class="topbar-title">Reports</div><div class="topbar-sub">Platform-wide analytics</div></div><div class="topbar-right"><button class="btn-sm" onclick="toast('Generating report CSV…','')">Export all CSV</button></div></div>
+        <div class="page-content">
+          <div class="stat-grid">
+            <div class="stat-card"><div class="stat-label">New signups (30d)</div><div class="stat-value">8</div><div class="stat-delta up">↑ 3 vs prior 30d</div></div>
+            <div class="stat-card"><div class="stat-label">Total vol (30d)</div><div class="stat-value">$184k</div><div class="stat-delta up">↑ 22%</div></div>
+            <div class="stat-card"><div class="stat-label">Dispute rate</div><div class="stat-value">1.6%</div><div class="stat-delta warn">↑ slightly</div></div>
+            <div class="stat-card"><div class="stat-label">Setup completion</div><div class="stat-value">79%</div><div class="stat-delta up">Zoom + JustiFi both done</div></div>
+          </div>
+          <div class="report-grid">
+            <div class="card">
+              <div class="card-title">Monthly payment volume</div>
+              <div class="chart-placeholder">
+                <div class="bar" style="height:35%;background:var(--accent);opacity:0.5"></div>
+                <div class="bar" style="height:50%;background:var(--accent);opacity:0.6"></div>
+                <div class="bar" style="height:44%;background:var(--accent);opacity:0.65"></div>
+                <div class="bar" style="height:68%;background:var(--accent);opacity:0.7"></div>
+                <div class="bar" style="height:72%;background:var(--accent);opacity:0.8"></div>
+                <div class="bar" style="height:85%;background:var(--accent);opacity:0.9"></div>
+                <div class="bar" style="height:95%;background:var(--accent)"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:6px;padding:0 14px"><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span><span>Feb</span><span>Mar</span></div>
+            </div>
+            <div class="card">
+              <div class="card-title">New account signups</div>
+              <div class="chart-placeholder">
+                <div class="bar" style="height:30%;background:var(--green);opacity:0.5"></div>
+                <div class="bar" style="height:40%;background:var(--green);opacity:0.6"></div>
+                <div class="bar" style="height:50%;background:var(--green);opacity:0.65"></div>
+                <div class="bar" style="height:40%;background:var(--green);opacity:0.7"></div>
+                <div class="bar" style="height:60%;background:var(--green);opacity:0.8"></div>
+                <div class="bar" style="height:55%;background:var(--green);opacity:0.9"></div>
+                <div class="bar" style="height:80%;background:var(--green)"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:6px;padding:0 14px"><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span><span>Feb</span><span>Mar</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SETTINGS ── -->
+      <div id="view-settings" class="view">
+        <div class="topbar"><div><div class="topbar-title">Admin Settings</div><div class="topbar-sub">Platform configuration</div></div></div>
+        <div class="page-content">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <div class="card">
+              <div class="card-title">Admin users</div>
+              <div class="payment-row"><div class="payment-info"><div class="payment-desc">Justin Brown</div><div class="payment-id">justin@lineamp.com · Super Admin</div></div><span class="pill blue">Super Admin</span></div>
+              <div class="payment-row"><div class="payment-info"><div class="payment-desc">Erin Brown</div><div class="payment-id">erin@lineamp.com · Support Admin</div></div><span class="pill gray">Support Admin</span></div>
+              <button class="btn-sm" style="margin-top:14px" onclick="toast('Invite link generated','')">+ Invite admin user</button>
+            </div>
+            <div class="card">
+              <div class="card-title">JustiFi API config</div>
+              <div class="health-row"><span class="health-label">Mode</span><span class="health-val green">● Live</span></div>
+              <div class="health-row"><span class="health-label">API key</span><span class="health-val" style="color:var(--text3);font-family:'DM Mono',monospace">live_••••••••8f2a</span></div>
+              <div class="health-row"><span class="health-label">Webhook endpoint</span><span class="health-val" style="color:var(--text3);font-family:'DM Mono',monospace;font-size:10px">api.lineamp.com/hooks/jf</span></div>
+              <div class="health-row"><span class="health-label">Last event received</span><span class="health-val" style="color:var(--text2)">2 min ago</span></div>
+              <button class="btn-sm" style="margin-top:14px" onclick="toast('API keys rotated — update your env','warn')">Rotate API keys</button>
+            </div>
+            <div class="card">
+              <div class="card-title">Platform SMS numbers</div>
+              <div class="payment-row"><div class="payment-info"><div class="payment-desc">+1 (801) 555-0100</div><div class="payment-id">Main platform number</div></div><span class="pill green">Active</span></div>
+              <div class="payment-row"><div class="payment-info"><div class="payment-desc">+1 (801) 555-0200</div><div class="payment-id">Secondary number</div></div><span class="pill green">Active</span></div>
+              <button class="btn-sm" style="margin-top:14px" onclick="toast('Opening number provisioning…','')">+ Provision number</button>
+            </div>
+            <div class="card">
+              <div class="card-title">Zoom OAuth app</div>
+              <div class="health-row"><span class="health-label">App status</span><span class="health-val green">● Published</span></div>
+              <div class="health-row"><span class="health-label">Client ID</span><span class="health-val" style="color:var(--text3);font-family:'DM Mono',monospace">zm_app_••••4f9a</span></div>
+              <div class="health-row"><span class="health-label">Redirect URI</span><span class="health-val" style="color:var(--text3);font-family:'DM Mono',monospace;font-size:10px">auth.lineamp.com/zoom/cb</span></div>
+              <button class="btn-sm" style="margin-top:14px" onclick="toast('Opening Zoom Marketplace settings…','')">Manage in Zoom ↗</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-title" id="modal-title">Confirm action</div>
+    <div class="modal-body" id="modal-body">Are you sure?</div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-confirm" id="modal-confirm-btn" onclick="confirmModal()">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-msg">Done</span>
+</div>
+
+<script>
+  let currentModal = '';
+
+  function login() {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+  }
+
+  function logout() {
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+  }
+
+  function showView(viewName, navEl) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + viewName).classList.add('active');
+    if (navEl) {
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      navEl.classList.add('active');
+    }
+  }
+
+  function showCustomer(id) {
+    const data = {
+      mh: { name: 'MH Business', avatar: 'MH', meta: 'matt.hyde@hey.com · +18014009287 · Active since Feb 2025' },
+      peak: { name: 'Peak Roofing LLC', avatar: 'PR', meta: 'billing@peakroof.com · Active since Feb 2025' },
+      acme: { name: 'Acme Services', avatar: 'AS', meta: 'ops@acmeservices.io · Joined today · Setup incomplete' },
+      bright: { name: 'Bright Clean Co', avatar: 'BC', meta: 'sarah@brightclean.com · JustiFi pending' },
+      lakewood: { name: 'Lakewood HVAC', avatar: 'LH', meta: 'admin@lakewoodhvac.com · SUSPENDED' },
+      nj: { name: 'NJ LineAmp Test', avatar: 'NJ', meta: 'test@njtest.com · Inactive 45 days' },
+    };
+    const d = data[id];
+    document.getElementById('detail-topbar-title').textContent = d.name;
+    document.getElementById('detail-avatar').textContent = d.avatar;
+    document.getElementById('detail-name').textContent = d.name;
+    document.getElementById('detail-meta').textContent = d.meta;
+    showView('customer-detail', null);
+    showTab('overview', document.querySelector('.tab'));
+  }
+
+  function showTab(tabName, el) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + tabName).style.display = 'block';
+    if (el) el.classList.add('active');
+    else {
+      const tabs = document.querySelectorAll('.tab');
+      const names = ['overview','zoom','justifi','usage','team','audit'];
+      const idx = names.indexOf(tabName);
+      if (idx >= 0 && tabs[idx]) tabs[idx].classList.add('active');
+    }
+  }
+
+  function toast(msg, type) {
+    const t = document.getElementById('toast');
+    const m = document.getElementById('toast-msg');
+    t.className = 'toast show' + (type === 'error' ? ' error' : type === 'warn' ? ' warn' : '');
+    m.textContent = msg;
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  function showConfirm(action) {
+    currentModal = action;
+    const configs = {
+      suspend: { title: 'Suspend this account?', body: 'The customer will lose access to LineAmp immediately. You can re-enable the account at any time. This action is logged.', btnText: 'Suspend account', safe: false },
+      'zoom-disconnect': { title: 'Disconnect Zoom?', body: 'This will remove the Zoom connection for MH Business. They will need to reconnect via OAuth before SMS will work again.', btnText: 'Disconnect', safe: false },
+      refund: { title: 'Issue a refund?', body: 'Select a specific payment to refund. This calls the JustiFi Refund API and cannot be undone. The refund will appear in the customer\'s account within 5-10 business days.', btnText: 'Proceed to refund', safe: true },
+    };
+    const c = configs[action] || { title: 'Confirm', body: 'Are you sure?', btnText: 'Confirm', safe: true };
+    document.getElementById('modal-title').textContent = c.title;
+    document.getElementById('modal-body').textContent = c.body;
+    const btn = document.getElementById('modal-confirm-btn');
+    btn.textContent = c.btnText;
+    btn.className = 'btn-confirm' + (c.safe ? ' safe' : '');
+    document.getElementById('modal-overlay').classList.add('show');
+  }
+
+  function closeModal() { document.getElementById('modal-overlay').classList.remove('show'); }
+
+  function confirmModal() {
+    closeModal();
+    const msgs = {
+      suspend: 'Account suspended. Customer notified.',
+      'zoom-disconnect': 'Zoom disconnected. OAuth link sent to customer.',
+      refund: 'Refund initiated via JustiFi API.',
+    };
+    toast(msgs[currentModal] || 'Action completed', currentModal === 'suspend' ? 'error' : '');
+  }
+
+  function filterStatus(s) { /* stub for filter pre-selection */ }
+
+  document.querySelectorAll('.tab').forEach((tab, i) => {
+    const names = ['overview','zoom','justifi','usage','team','audit'];
+    tab.addEventListener('click', function() { showTab(names[i], this); });
+  });
+</script>
+</body>
+</html>
