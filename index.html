@@ -346,16 +346,6 @@
           Incomplete Setup
           <span class="nav-badge">6</span>
         </div>
-        <div class="nav-section-label">Payments</div>
-        <div class="nav-item" onclick="showView('disputes', this)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
-          Disputes
-          <span class="nav-badge">3</span>
-        </div>
-        <div class="nav-item" onclick="showView('payouts', this)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-          Payouts &amp; Holds
-        </div>
         <div class="nav-section-label">Analytics</div>
         <div class="nav-item" onclick="showView('reports', this)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
@@ -403,30 +393,29 @@
               <div class="stat-delta up">↑ 5 this month</div>
             </div>
             <div class="stat-card">
-              <div class="stat-label">Total Vol (30d)</div>
-              <div class="stat-value">$184k</div>
-              <div class="stat-delta up">↑ 22% vs prior</div>
+              <div class="stat-label">SMS Sent (30d)</div>
+              <div class="stat-value">2,841</div>
+              <div class="stat-delta up">↑ 18% vs prior</div>
             </div>
             <div class="stat-card">
               <div class="stat-label">Incomplete Setup</div>
               <div class="stat-value" style="color:var(--amber)">6</div>
-              <div class="stat-delta warn">Zoom or JustiFi missing</div>
+              <div class="stat-delta warn">Zoom connection missing</div>
             </div>
             <div class="stat-card">
-              <div class="stat-label">Open Disputes</div>
-              <div class="stat-value" style="color:var(--red)">3</div>
-              <div class="stat-delta down">2 require response</div>
+              <div class="stat-label">Payment Links Sent (30d)</div>
+              <div class="stat-value">694</div>
+              <div class="stat-delta up">↑ 31% vs prior</div>
             </div>
           </div>
 
           <div class="health-grid">
             <div class="health-card">
               <div class="health-card-title">System Health</div>
-              <div class="health-row"><span class="health-label">JustiFi API</span><span class="health-val green">● Operational</span></div>
-              <div class="health-row"><span class="health-label">JustiFi Webhooks</span><span class="health-val green">● Delivering</span></div>
               <div class="health-row"><span class="health-label">Zoom OAuth</span><span class="health-val green">● Operational</span></div>
               <div class="health-row"><span class="health-label">SMS Delivery</span><span class="health-val amber">● Degraded</span></div>
-              <div class="health-row"><span class="health-label">Last webhook event</span><span class="health-val" style="color:var(--text2)">2 min ago</span></div>
+              <div class="health-row"><span class="health-label">Database</span><span class="health-val green">● Operational</span></div>
+              <div class="health-row"><span class="health-label">Last SMS sent</span><span class="health-val" style="color:var(--text2)">2 min ago</span></div>
             </div>
 
             <div class="health-card">
@@ -443,14 +432,9 @@
                   <div class="funnel-count">47</div>
                 </div>
                 <div class="funnel-row">
-                  <div class="funnel-label">JustiFi approved</div>
-                  <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:79%;background:var(--green)">42</div></div>
-                  <div class="funnel-count">42</div>
-                </div>
-                <div class="funnel-row">
                   <div class="funnel-label">First payment sent</div>
-                  <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:62%;background:var(--amber)">33</div></div>
-                  <div class="funnel-count">33</div>
+                  <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:70%;background:var(--green)">37</div></div>
+                  <div class="funnel-count">37</div>
                 </div>
               </div>
             </div>
@@ -458,18 +442,17 @@
             <div class="health-card">
               <div class="health-card-title">Accounts Needing Attention</div>
               <div class="health-row"><span class="health-label">No Zoom connection</span><span class="health-val amber">4 accounts</span></div>
-              <div class="health-row"><span class="health-label">JustiFi not approved</span><span class="health-val amber">5 accounts</span></div>
-              <div class="health-row"><span class="health-label">Payout holds active</span><span class="health-val red">2 accounts</span></div>
               <div class="health-row"><span class="health-label">Inactive 30+ days</span><span class="health-val" style="color:var(--text3)">3 accounts</span></div>
               <div class="health-row"><span class="health-label">Suspended</span><span class="health-val red">1 account</span></div>
+              <div class="health-row"><span class="health-label">SMS issues reported</span><span class="health-val amber">2 accounts</span></div>
             </div>
 
             <div class="health-card">
               <div class="health-card-title">Recent Activity</div>
               <div class="health-row"><span class="health-label" style="font-size:11px">Acme Services — signed up</span><span class="health-val" style="color:var(--text3)">2h ago</span></div>
-              <div class="health-row"><span class="health-label" style="font-size:11px">Peak Roofing — JustiFi approved</span><span class="health-val" style="color:var(--text3)">4h ago</span></div>
-              <div class="health-row"><span class="health-label" style="font-size:11px">MH Business — dispute opened</span><span class="health-val" style="color:var(--red)">6h ago</span></div>
-              <div class="health-row"><span class="health-label" style="font-size:11px">Bright Clean Co — Zoom reconnected</span><span class="health-val" style="color:var(--text3)">1d ago</span></div>
+              <div class="health-row"><span class="health-label" style="font-size:11px">MH Business — team member invited</span><span class="health-val" style="color:var(--text3)">4h ago</span></div>
+              <div class="health-row"><span class="health-label" style="font-size:11px">Bright Clean Co — Zoom reconnected</span><span class="health-val" style="color:var(--text3)">6h ago</span></div>
+              <div class="health-row"><span class="health-label" style="font-size:11px">Peak Roofing — password reset</span><span class="health-val" style="color:var(--text3)">1d ago</span></div>
               <div class="health-row"><span class="health-label" style="font-size:11px">Lakewood HVAC — account suspended</span><span class="health-val" style="color:var(--red)">2d ago</span></div>
             </div>
           </div>
@@ -503,10 +486,9 @@
                   <option>Pending setup</option>
                 </select>
                 <select class="filter-select">
-                  <option>All JustiFi</option>
-                  <option>Approved</option>
-                  <option>Pending</option>
-                  <option>Not started</option>
+                  <option>All Zoom</option>
+                  <option>Connected</option>
+                  <option>Disconnected</option>
                 </select>
               </div>
             </div>
@@ -516,8 +498,7 @@
                   <th>Business</th>
                   <th>Status</th>
                   <th>Zoom</th>
-                  <th>JustiFi</th>
-                  <th>30d Volume</th>
+                  <th>SMS Sent (30d)</th>
                   <th>Last Active</th>
                   <th>Signed Up</th>
                 </tr>
@@ -527,8 +508,7 @@
                   <td><div style="font-weight:500">MH Business</div><div style="font-size:10px;color:var(--text3);font-family:'DM Mono',monospace">matt.hyde@hey.com</div></td>
                   <td><span class="pill green">Active</span></td>
                   <td><span class="pill green">Connected</span></td>
-                  <td><span class="pill green">Approved</span></td>
-                  <td style="font-family:'DM Mono',monospace">$12,450</td>
+                  <td style="font-family:'DM Mono',monospace">312</td>
                   <td style="color:var(--text2)">Today</td>
                   <td style="color:var(--text3)">Feb 1, 2025</td>
                 </tr>
@@ -536,8 +516,7 @@
                   <td><div style="font-weight:500">Peak Roofing LLC</div><div style="font-size:10px;color:var(--text3);font-family:'DM Mono',monospace">billing@peakroof.com</div></td>
                   <td><span class="pill green">Active</span></td>
                   <td><span class="pill green">Connected</span></td>
-                  <td><span class="pill green">Approved</span></td>
-                  <td style="font-family:'DM Mono',monospace">$8,200</td>
+                  <td style="font-family:'DM Mono',monospace">198</td>
                   <td style="color:var(--text2)">Today</td>
                   <td style="color:var(--text3)">Feb 14, 2025</td>
                 </tr>
@@ -545,7 +524,6 @@
                   <td><div style="font-weight:500">Acme Services</div><div style="font-size:10px;color:var(--text3);font-family:'DM Mono',monospace">ops@acmeservices.io</div></td>
                   <td><span class="pill amber">Pending setup</span></td>
                   <td><span class="pill red">Disconnected</span></td>
-                  <td><span class="pill amber">Pending</span></td>
                   <td style="font-family:'DM Mono',monospace;color:var(--text3)">—</td>
                   <td style="color:var(--text3)">2h ago</td>
                   <td style="color:var(--text3)">Mar 17, 2026</td>
@@ -554,8 +532,7 @@
                   <td><div style="font-weight:500">Bright Clean Co</div><div style="font-size:10px;color:var(--text3);font-family:'DM Mono',monospace">sarah@brightclean.com</div></td>
                   <td><span class="pill green">Active</span></td>
                   <td><span class="pill green">Connected</span></td>
-                  <td><span class="pill amber">Pending</span></td>
-                  <td style="font-family:'DM Mono',monospace">$3,100</td>
+                  <td style="font-family:'DM Mono',monospace">87</td>
                   <td style="color:var(--text2)">Yesterday</td>
                   <td style="color:var(--text3)">Mar 1, 2026</td>
                 </tr>
@@ -563,8 +540,7 @@
                   <td><div style="font-weight:500">Lakewood HVAC</div><div style="font-size:10px;color:var(--text3);font-family:'DM Mono',monospace">admin@lakewoodhvac.com</div></td>
                   <td><span class="pill red">Suspended</span></td>
                   <td><span class="pill green">Connected</span></td>
-                  <td><span class="pill green">Approved</span></td>
-                  <td style="font-family:'DM Mono',monospace;color:var(--text3)">$0</td>
+                  <td style="font-family:'DM Mono',monospace;color:var(--text3)">0</td>
                   <td style="color:var(--text3)">14d ago</td>
                   <td style="color:var(--text3)">Jan 5, 2025</td>
                 </tr>
@@ -572,7 +548,6 @@
                   <td><div style="font-weight:500">NJ LineAmp Test</div><div style="font-size:10px;color:var(--text3);font-family:'DM Mono',monospace">test@njtest.com</div></td>
                   <td><span class="pill gray">Inactive</span></td>
                   <td><span class="pill red">Disconnected</span></td>
-                  <td><span class="pill gray">Not started</span></td>
                   <td style="font-family:'DM Mono',monospace;color:var(--text3)">—</td>
                   <td style="color:var(--text3)">45d ago</td>
                   <td style="color:var(--text3)">Feb 1, 2026</td>
@@ -588,7 +563,7 @@
         <div class="topbar">
           <div>
             <div class="topbar-title" id="detail-topbar-title">Account Detail</div>
-            <div class="topbar-sub">acc_mh4829x · JustiFi sub-account</div>
+            <div class="topbar-sub">Customer account detail</div>
           </div>
           <div class="topbar-right"><span class="env-badge">● Live</span></div>
         </div>
@@ -624,7 +599,7 @@
           <div class="tabs">
             <div class="tab active" onclick="showTab('overview', this)">Overview</div>
             <div class="tab" onclick="showTab('zoom', this)">Zoom Connection</div>
-            <div class="tab" onclick="showTab('justifi', this)">JustiFi / Payments</div>
+            <div class="tab" onclick="showTab('justifi', this)">JustiFi Reference</div>
             <div class="tab" onclick="showTab('usage', this)">Usage &amp; Activity</div>
             <div class="tab" onclick="showTab('team', this)">Team Members</div>
             <div class="tab" onclick="showTab('audit', this)">Audit Log</div>
@@ -649,19 +624,15 @@
               <div class="card">
                 <div class="card-title">Integration status</div>
                 <div class="health-row"><span class="health-label">Zoom account</span><span class="health-val green">● Connected</span></div>
-                <div class="health-row"><span class="health-label">JustiFi sub-account</span><span class="health-val green">● Approved</span></div>
-                <div class="health-row"><span class="health-label">Payout account</span><span class="health-val green">● Verified</span></div>
-                <div class="health-row"><span class="health-label">Open disputes</span><span class="health-val red">1 open</span></div>
-                <div class="health-row"><span class="health-label">Payout holds</span><span class="health-val green">None</span></div>
+                <div class="health-row"><span class="health-label">SMS capability</span><span class="health-val green">● Active</span></div>
+                <div class="health-row"><span class="health-label">Phone numbers</span><span class="health-val" style="color:var(--text)">2 assigned</span></div>
                 <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
-                  <a style="font-size:11px;color:var(--blue);cursor:pointer" onclick="toast('Opening JustiFi dashboard…','')">View in JustiFi ↗</a>
-                  <span style="color:var(--border2)">·</span>
                   <a style="font-size:11px;color:var(--blue);cursor:pointer" onclick="toast('Opening Zoom admin panel…','')">View Zoom account ↗</a>
                 </div>
               </div>
               <div class="card" style="grid-column:1/-1">
                 <div class="card-title">Internal notes</div>
-                <textarea style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:10px 12px;color:var(--text);font-family:'Sora',sans-serif;font-size:12px;line-height:1.6;resize:vertical;min-height:80px;outline:none" placeholder="Add internal support notes here — not visible to the customer…">Matt reached out 3/5 re: slow payment confirmation. Confirmed JustiFi webhook latency issue. Resolved 3/6.</textarea>
+                <textarea style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:10px 12px;color:var(--text);font-family:'Sora',sans-serif;font-size:12px;line-height:1.6;resize:vertical;min-height:80px;outline:none" placeholder="Add internal support notes here — not visible to the customer…">Matt reached out 3/5 re: slow payment confirmation. Checked SMS delivery logs — carrier delay identified. Resolved 3/6.</textarea>
                 <button class="btn-sm" style="margin-top:10px" onclick="toast('Notes saved','')">Save notes</button>
               </div>
             </div>
@@ -695,58 +666,19 @@
             </div>
           </div>
 
-          <!-- TAB: JUSTIFI -->
+          <!-- TAB: JUSTIFI REFERENCE -->
           <div id="tab-justifi" class="tab-panel" style="display:none">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+            <div style="max-width:520px">
               <div class="card">
-                <div class="card-title">Sub-account status <span class="pill green">Approved</span></div>
+                <div class="card-title">JustiFi account reference</div>
+                <p style="font-size:12px;color:var(--text2);margin-bottom:16px;line-height:1.6">Use these identifiers to look up this customer's payment details, disputes, payouts, and refunds directly in the JustiFi portal.</p>
                 <div class="info-grid">
                   <div class="info-item"><label>Sub-account ID</label><span class="mono">acc_mh4829x</span></div>
                   <div class="info-item"><label>Business ID</label><span class="mono">biz_k29ahx71</span></div>
-                  <div class="info-item"><label>Underwriting</label><span style="color:var(--green)">Approved</span></div>
-                  <div class="info-item"><label>Currency</label><span>USD</span></div>
-                  <div class="info-item"><label>Payout account</label><span style="color:var(--green)">●●●●4422 — Verified</span></div>
-                  <div class="info-item"><label>Payout holds</label><span style="color:var(--text3)">None</span></div>
                 </div>
-                <div style="margin-top:14px;display:flex;gap:8px">
-                  <button class="btn-sm" onclick="toast('Opening JustiFi dashboard for acc_mh4829x…','')">Open in JustiFi ↗</button>
-                  <button class="btn-sm" onclick="toast('Onboarding link sent to matt.hyde@hey.com','')">Re-trigger onboarding</button>
+                <div style="margin-top:18px">
+                  <button class="btn-sm primary" onclick="toast('Opening JustiFi portal for acc_mh4829x…','')">Open in JustiFi Portal ↗</button>
                 </div>
-              </div>
-              <div class="card">
-                <div class="card-title">Payment summary</div>
-                <div class="health-row"><span class="health-label">Last 7 days</span><span class="health-val" style="color:var(--text)">$3,200</span></div>
-                <div class="health-row"><span class="health-label">Last 30 days</span><span class="health-val" style="color:var(--text)">$12,450</span></div>
-                <div class="health-row"><span class="health-label">Lifetime volume</span><span class="health-val" style="color:var(--text)">$84,220</span></div>
-                <div class="health-row"><span class="health-label">Payment link conv.</span><span class="health-val" style="color:var(--green)">73%</span></div>
-                <div class="health-row"><span class="health-label">Open disputes</span><span class="health-val red">1</span></div>
-              </div>
-            </div>
-            <div class="card">
-              <div class="card-title">Recent payments</div>
-              <div class="payment-row">
-                <div class="payment-info"><div class="payment-desc">Website redesign deposit</div><div class="payment-id">pay_7fa92b · Mar 17, 2026</div></div>
-                <span class="pill green" style="margin-right:12px">Succeeded</span>
-                <div><div class="payment-amount">$500.00</div></div>
-              </div>
-              <div class="payment-row">
-                <div class="payment-info"><div class="payment-desc">Monthly retainer — March</div><div class="payment-id">pay_6dc81a · Mar 10, 2026</div></div>
-                <span class="pill green" style="margin-right:12px">Succeeded</span>
-                <div><div class="payment-amount">$1,200.00</div></div>
-              </div>
-              <div class="payment-row">
-                <div class="payment-info"><div class="payment-desc">Logo design package</div><div class="payment-id">pay_5bc72f · Mar 5, 2026</div></div>
-                <span class="pill amber" style="margin-right:12px">Disputed</span>
-                <div><div class="payment-amount">$350.00</div></div>
-              </div>
-              <div class="payment-row">
-                <div class="payment-info"><div class="payment-desc">Rush print order</div><div class="payment-id">pay_4ab61e · Feb 28, 2026</div></div>
-                <span class="pill green" style="margin-right:12px">Succeeded</span>
-                <div><div class="payment-amount">$175.00</div></div>
-              </div>
-              <div style="margin-top:14px;display:flex;gap:8px">
-                <button class="btn-sm" onclick="toast('Downloading payment CSV for acc_mh4829x…','')">Export CSV</button>
-                <button class="btn-sm danger" onclick="showConfirm('refund')">Issue Refund</button>
               </div>
             </div>
           </div>
@@ -854,69 +786,7 @@
         </div>
       </div>
 
-      <!-- ── DISPUTES ── -->
-      <div id="view-disputes" class="view">
-        <div class="topbar"><div><div class="topbar-title">Disputes</div><div class="topbar-sub">3 open · 2 require response</div></div><div class="topbar-right"><span class="env-badge">● Live</span></div></div>
-        <div class="page-content">
-          <div class="table-wrap">
-            <div class="table-header"><div class="table-title">Open disputes</div></div>
-            <table>
-              <thead><tr><th>Account</th><th>Payment ID</th><th>Amount</th><th>Reason</th><th>Status</th><th>Response due</th><th>Action</th></tr></thead>
-              <tbody>
-                <tr>
-                  <td>MH Business</td>
-                  <td style="font-family:'DM Mono',monospace;font-size:11px">pay_5bc72f</td>
-                  <td style="font-family:'DM Mono',monospace">$350.00</td>
-                  <td>Product not received</td>
-                  <td><span class="pill red">Needs response</span></td>
-                  <td style="color:var(--red)">Mar 24, 2026</td>
-                  <td><button class="btn-sm primary" style="padding:5px 10px;font-size:11px" onclick="toast('Opening dispute response form…','')">Respond</button></td>
-                </tr>
-                <tr>
-                  <td>Peak Roofing LLC</td>
-                  <td style="font-family:'DM Mono',monospace;font-size:11px">pay_3aa51c</td>
-                  <td style="font-family:'DM Mono',monospace">$1,800.00</td>
-                  <td>Services not rendered</td>
-                  <td><span class="pill red">Needs response</span></td>
-                  <td style="color:var(--red)">Mar 22, 2026</td>
-                  <td><button class="btn-sm primary" style="padding:5px 10px;font-size:11px" onclick="toast('Opening dispute response form…','')">Respond</button></td>
-                </tr>
-                <tr>
-                  <td>Bright Clean Co</td>
-                  <td style="font-family:'DM Mono',monospace;font-size:11px">pay_2z940b</td>
-                  <td style="font-family:'DM Mono',monospace">$220.00</td>
-                  <td>Duplicate charge</td>
-                  <td><span class="pill amber">Under review</span></td>
-                  <td style="color:var(--text3)">Apr 1, 2026</td>
-                  <td><button class="btn-sm" style="padding:5px 10px;font-size:11px" onclick="toast('Viewing dispute details…','')">View</button></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
 
-      <!-- ── PAYOUTS ── -->
-      <div id="view-payouts" class="view">
-        <div class="topbar"><div><div class="topbar-title">Payouts &amp; Holds</div><div class="topbar-sub">2 accounts with active holds</div></div><div class="topbar-right"><span class="env-badge">● Live</span></div></div>
-        <div class="page-content">
-          <div class="stat-grid" style="grid-template-columns:repeat(3,1fr)">
-            <div class="stat-card"><div class="stat-label">Total Payouts (30d)</div><div class="stat-value">$141k</div><div class="stat-delta up">Across 42 accounts</div></div>
-            <div class="stat-card"><div class="stat-label">Active Holds</div><div class="stat-value" style="color:var(--amber)">2</div><div class="stat-delta warn">$4,200 held</div></div>
-            <div class="stat-card"><div class="stat-label">Next Payout Batch</div><div class="stat-value" style="font-size:18px">Tomorrow</div><div class="stat-delta">Daily schedule</div></div>
-          </div>
-          <div class="table-wrap">
-            <div class="table-header"><div class="table-title">Payout holds</div></div>
-            <table>
-              <thead><tr><th>Account</th><th>Amount held</th><th>Reason</th><th>Hold since</th><th>Action</th></tr></thead>
-              <tbody>
-                <tr><td>Lakewood HVAC</td><td style="font-family:'DM Mono',monospace">$2,800.00</td><td>Account suspended — compliance review</td><td style="color:var(--text3)">Mar 3, 2026</td><td><button class="btn-sm" onclick="toast('Opening hold details…','')">View</button></td></tr>
-                <tr><td>NJ LineAmp Test</td><td style="font-family:'DM Mono',monospace">$1,400.00</td><td>Underwriting not complete</td><td style="color:var(--text3)">Feb 20, 2026</td><td><button class="btn-sm" onclick="toast('Opening hold details…','')">View</button></td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
 
       <!-- ── REPORTS ── -->
       <div id="view-reports" class="view">
@@ -924,13 +794,13 @@
         <div class="page-content">
           <div class="stat-grid">
             <div class="stat-card"><div class="stat-label">New signups (30d)</div><div class="stat-value">8</div><div class="stat-delta up">↑ 3 vs prior 30d</div></div>
-            <div class="stat-card"><div class="stat-label">Total vol (30d)</div><div class="stat-value">$184k</div><div class="stat-delta up">↑ 22%</div></div>
-            <div class="stat-card"><div class="stat-label">Dispute rate</div><div class="stat-value">1.6%</div><div class="stat-delta warn">↑ slightly</div></div>
-            <div class="stat-card"><div class="stat-label">Setup completion</div><div class="stat-value">79%</div><div class="stat-delta up">Zoom + JustiFi both done</div></div>
+            <div class="stat-card"><div class="stat-label">SMS Sent (30d)</div><div class="stat-value">2,841</div><div class="stat-delta up">↑ 18%</div></div>
+            <div class="stat-card"><div class="stat-label">Payment Links (30d)</div><div class="stat-value">694</div><div class="stat-delta up">↑ 31%</div></div>
+            <div class="stat-card"><div class="stat-label">Zoom Setup Rate</div><div class="stat-value">89%</div><div class="stat-delta up">47 of 53 connected</div></div>
           </div>
           <div class="report-grid">
             <div class="card">
-              <div class="card-title">Monthly payment volume</div>
+              <div class="card-title">Monthly SMS volume</div>
               <div class="chart-placeholder">
                 <div class="bar" style="height:35%;background:var(--accent);opacity:0.5"></div>
                 <div class="bar" style="height:50%;background:var(--accent);opacity:0.6"></div>
@@ -971,12 +841,11 @@
               <button class="btn-sm" style="margin-top:14px" onclick="toast('Invite link generated','')">+ Invite admin user</button>
             </div>
             <div class="card">
-              <div class="card-title">JustiFi API config</div>
-              <div class="health-row"><span class="health-label">Mode</span><span class="health-val green">● Live</span></div>
-              <div class="health-row"><span class="health-label">API key</span><span class="health-val" style="color:var(--text3);font-family:'DM Mono',monospace">live_••••••••8f2a</span></div>
-              <div class="health-row"><span class="health-label">Webhook endpoint</span><span class="health-val" style="color:var(--text3);font-family:'DM Mono',monospace;font-size:10px">api.lineamp.com/hooks/jf</span></div>
-              <div class="health-row"><span class="health-label">Last event received</span><span class="health-val" style="color:var(--text2)">2 min ago</span></div>
-              <button class="btn-sm" style="margin-top:14px" onclick="toast('API keys rotated — update your env','warn')">Rotate API keys</button>
+              <div class="card-title">Platform settings</div>
+              <div class="health-row"><span class="health-label">Environment</span><span class="health-val green">● Production</span></div>
+              <div class="health-row"><span class="health-label">Auto-create customers</span><span class="health-val green">● Enabled</span></div>
+              <div class="health-row"><span class="health-label">SMS receipts default</span><span class="health-val green">● On</span></div>
+              <div class="health-row"><span class="health-label">Session timeout</span><span class="health-val" style="color:var(--text2)">8 hours</span></div>
             </div>
             <div class="card">
               <div class="card-title">Platform SMS numbers</div>
@@ -1043,7 +912,7 @@
       mh: { name: 'MH Business', avatar: 'MH', meta: 'matt.hyde@hey.com · +18014009287 · Active since Feb 2025' },
       peak: { name: 'Peak Roofing LLC', avatar: 'PR', meta: 'billing@peakroof.com · Active since Feb 2025' },
       acme: { name: 'Acme Services', avatar: 'AS', meta: 'ops@acmeservices.io · Joined today · Setup incomplete' },
-      bright: { name: 'Bright Clean Co', avatar: 'BC', meta: 'sarah@brightclean.com · JustiFi pending' },
+      bright: { name: 'Bright Clean Co', avatar: 'BC', meta: 'sarah@brightclean.com · Active since Mar 2026' },
       lakewood: { name: 'Lakewood HVAC', avatar: 'LH', meta: 'admin@lakewoodhvac.com · SUSPENDED' },
       nj: { name: 'NJ LineAmp Test', avatar: 'NJ', meta: 'test@njtest.com · Inactive 45 days' },
     };
@@ -1082,7 +951,6 @@
     const configs = {
       suspend: { title: 'Suspend this account?', body: 'The customer will lose access to LineAmp immediately. You can re-enable the account at any time. This action is logged.', btnText: 'Suspend account', safe: false },
       'zoom-disconnect': { title: 'Disconnect Zoom?', body: 'This will remove the Zoom connection for MH Business. They will need to reconnect via OAuth before SMS will work again.', btnText: 'Disconnect', safe: false },
-      refund: { title: 'Issue a refund?', body: 'Select a specific payment to refund. This calls the JustiFi Refund API and cannot be undone. The refund will appear in the customer\'s account within 5-10 business days.', btnText: 'Proceed to refund', safe: true },
     };
     const c = configs[action] || { title: 'Confirm', body: 'Are you sure?', btnText: 'Confirm', safe: true };
     document.getElementById('modal-title').textContent = c.title;
@@ -1100,7 +968,6 @@
     const msgs = {
       suspend: 'Account suspended. Customer notified.',
       'zoom-disconnect': 'Zoom disconnected. OAuth link sent to customer.',
-      refund: 'Refund initiated via JustiFi API.',
     };
     toast(msgs[currentModal] || 'Action completed', currentModal === 'suspend' ? 'error' : '');
   }
